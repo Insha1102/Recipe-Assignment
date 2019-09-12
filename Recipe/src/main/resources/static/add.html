@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title>Add Recipe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+	<div class="container my-5">
+		<h3>Add Recipe</h3>
+		<div class="card">
+			<div class="card-body">
+				<div class="col-md-10">
+					<form>
+						<div class="row">
+
+							<div class="form-group col-md-8">
+								<label for="name" class="col-form-label">Name</label> <input
+									type="text" class="form-control" id="name" placeholder="Name" />
+							</div>
+							<div class="form-group col-md-8">
+								<label for="indicator" class="col-form-label">Indicator</label>
+								<input type="text" class="form-control" id="indicator"
+									placeholder="Indicator" />
+							</div>
+							<div class="form-group col-md-8">
+								<label for="servings" class="col-form-label">Servings</label> <input
+									type="text" class="form-control" id="servings"
+									placeholder="Servings" />
+							</div>
+							<div class="form-group col-md-8">
+								<label for="ingredients" class="col-form-label">Ingredients</label>
+								<input type="text" class="form-control" id="ingredients"
+									placeholder="Ingredients" />
+							</div>
+							<div class="form-group col-md-8">
+								<label for="instructions" class="col-form-label">Instructions</label>
+								<input type="text" class="form-control" id="instructions"
+									placeholder="Instructions" />
+							</div>
+							<div class="form-group col-md-8">
+								<label for="image" class="col-form-label">Image</label>
+								<input type="text" class="form-control" id="image"
+									placeholder="Image" />
+							</div>
+						
+							<div class="col-md-6">
+								<input type="button" class="btn btn-primary" id="edit"
+									value=" Submit ">
+							</div>
+
+							<!-- <input type="hidden" id="id" th:field="*{id}"> -->
+
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+ $(function(){
+	 var url = window.location.href;
+	 
+	 var id = (url.split('?')[1])==undefined?undefined:(url.split('?')[1]).split('=')[1];
+	 if(id!= undefined){
+		 
+		 $.ajax({url: "/api/recipies/"+id,
+				type : 'GET',
+				success: function(result){
+					$('#name').val(result.name);
+					$('#indicator').val(result.indicator);
+					$('#servings').val(result.servings);
+					$('#ingredients').val(result.ingredients);
+					$('#instructions').val(result.instructions);
+					$('#image').val(result.image);
+			  }}); 
+		 
+		 var recipe={};
+		 $('#edit').click(function (){ 
+			 
+			 recipe.name = $('#name').val();
+			 recipe.indicator = $('#indicator').val();
+			 recipe.servings = $('#servings').val();
+			 recipe.ingredients = $('#ingredients').val();
+			 recipe.instructions = $('#instructions').val();
+			 recipe.image = $('#image').val();
+			 console.log('edit '+JSON.stringify(recipe));
+			 var myRecipe = JSON.stringify(recipe);
+					$.ajax({
+					   type: 'PUT',
+					   url: '/api/recipies/'+id, //the name and location of your php file
+					   data: myRecipe,   
+					   contentType: "application/json",
+					   success: function() {
+						   
+						   alert('sucess');
+						   window.location.href = "http://localhost:8888/recipelist.html";
+						   },
+					   error: function (error) {
+		                   alert("error");
+		               }
+					});
+			});
+	 }else{
+		 var recipe={};
+		 $('#edit').click(function (){ 
+			 
+			 recipe.name = $('#name').val();
+			 recipe.indicator = $('#indicator').val();
+			 recipe.servings = $('#servings').val();
+			 recipe.ingredients = $('#ingredients').val();
+			 recipe.instructions = $('#instructions').val();
+			 recipe.image = $('#image').val();
+			 console.log(JSON.stringify(recipe));
+			 var myRecipe = JSON.stringify(recipe);
+					$.ajax({
+					   type: 'POST',
+					   url: '/create', //the name and location of your php file
+					   data: myRecipe,   
+					   contentType: "application/json",
+					   success: function() {
+						   alert('sucess');
+						   window.location.href = "http://localhost:8888/recipelist.html";
+						   },
+					   error: function (error) {
+		                   alert(error);
+		               }
+					});
+				});
+	 }
+	
+ });
+
+ 
+ </script>
+</html>
